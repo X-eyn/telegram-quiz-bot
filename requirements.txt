@@ -1,0 +1,10 @@
+python-telegram-bot==12.7
+pymongo==3.6
+pytest-asyncio
+pytest
+fastapi==0.68.1
+uvicorn==0.15.0
+sqlalchemy==1.4.23
+mysql-connector-python==8.0.26
+python-dotenv==0.19.0
+httpx==0.19.0
