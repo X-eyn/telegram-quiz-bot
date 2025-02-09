@@ -158,5 +158,114 @@
     "timer": 20,
     "shuffle": true,
     "submit": true
+  },
+  {
+    "quiz_name": "Hello",
+    "quiz_description": "HelloWorld",
+    "pre_question": null,
+    "questions": [
+      {
+        "question": "Whats 2 + 3",
+        "options": [
+          "5",
+          "6",
+          "7"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 20,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "quiz1",
+    "quiz_description": "",
+    "pre_question": null,
+    "questions": [
+      {
+        "question": "5+5",
+        "options": [
+          "10",
+          "15",
+          "23"
+        ],
+        "correct_option_id": null,
+        "explanation": ""
+      },
+      {
+        "question": "7+20",
+        "options": [
+          "23",
+          "27",
+          "207"
+        ],
+        "correct_option_id": null,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "quiz3",
+    "quiz_description": "",
+    "pre_question": null,
+    "questions": [
+      {
+        "question": "Capital of France",
+        "options": [
+          "rewtyu",
+          "ewrtyu",
+          "rwety"
+        ],
+        "correct_option_id": null,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "quiz4",
+    "quiz_description": "",
+    "pre_question": null,
+    "questions": [
+      {
+        "question": "wfkjwfihwf",
+        "options": [
+          "wdofnwonf",
+          "lkdfniwnfon"
+        ],
+        "correct_option_id": null,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "TestQuizSifat",
+    "quiz_description": "",
+    "pre_question": null,
+    "questions": [
+      {
+        "question": "2 plus 3",
+        "options": [
+          "5",
+          "6",
+          "7"
+        ],
+        "correct_option_id": null,
+        "explanation": ""
+      }
+    ],
+    "timer": 12,
+    "shuffle": true,
+    "submit": true
   }
 ]

@@ -38,7 +38,7 @@ CR_SUBMIT = 8
 
 # Quiz Taking states
 TK_SELECT_QUIZ = 19
-TK_TAKING_QUESTION = 20  # Not used in conversation handler; replaced by TK_WAIT_NEXT
+TK_TAKING_QUESTION = 20  # Not used; we now use TK_WAIT_NEXT
 TK_WAIT_NEXT = 21
 
 # Import Conversation state
@@ -118,7 +118,7 @@ def save_poll_answer_data(data):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [InlineKeyboardButton("Create Quiz", callback_data="create_quiz")],
-        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")],
+        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if update.message:
@@ -158,13 +158,18 @@ async def cr_skip_description(update: Update, context: ContextTypes.DEFAULT_TYPE
     await update.message.reply_text("No description added.\nSend pre-question text or image (optional, or type /skip to skip):")
     return CR_PRE_QUESTION
 
+# In group chats the poll-request button isn't allowed.
 async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    # Check if the message contains a photo; if so, store its file_id.
+    if update.effective_chat.type != "private":
+        await update.message.reply_text(
+            "Poll creation via button is only available in private chats. "
+            "Please send your quiz poll manually (as a quiz-type poll) to the chat."
+        )
+        return CR_ADD_QUESTION
     if update.message.photo:
         context.user_data['pre_question'] = {"type": "photo", "file_id": update.message.photo[-1].file_id}
     else:
         context.user_data['pre_question'] = {"type": "text", "content": update.message.text}
-    # Use KeyboardButtonPollType to let the user create a quiz-type poll.
     button = KeyboardButton("Create Quiz Question", request_poll=KeyboardButtonPollType(type="quiz"))
     markup = ReplyKeyboardMarkup([[button]], one_time_keyboard=True, resize_keyboard=True)
     await update.message.reply_text(
@@ -174,6 +179,12 @@ async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     return CR_ADD_QUESTION
 
 async def cr_skip_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    if update.effective_chat.type != "private":
+        await update.message.reply_text(
+            "Poll creation via button is only available in private chats. "
+            "Please send your quiz poll manually (as a quiz-type poll) to the chat."
+        )
+        return CR_ADD_QUESTION
     context.user_data['pre_question'] = None
     button = KeyboardButton("Create Quiz Question", request_poll=KeyboardButtonPollType(type="quiz"))
     markup = ReplyKeyboardMarkup([[button]], one_time_keyboard=True, resize_keyboard=True)
@@ -209,6 +220,9 @@ async def cr_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     query = update.callback_query
     await query.answer()
     if query.data == "add_another":
+        if update.effective_chat.type != "private":
+            await query.edit_message_text("Poll creation via button is only available in private chats. Please send your quiz poll manually (as a quiz-type poll) to the chat.")
+            return CR_ADD_QUESTION
         button = KeyboardButton("Create Quiz Question", request_poll=KeyboardButtonPollType(type="quiz"))
         markup = ReplyKeyboardMarkup([[button]], one_time_keyboard=True, resize_keyboard=True)
         await query.edit_message_text("Send your next quiz question by pressing the button below:")
@@ -388,10 +402,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
         await update.message.reply_text("No quizzes found to export.")
         return
 
-    # The JSON file already exists (QUIZZES_FILE)
     json_file = QUIZZES_FILE
-
-    # Export to CSV
     csv_file = "quizzes_export.csv"
     with open(csv_file, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -418,7 +429,6 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
                     quiz.get("shuffle", False),
                     quiz.get("submit", False)
                 ])
-    # Export to XLSX
     xlsx_file = "quizzes_export.xlsx"
     try:
         from openpyxl import Workbook
@@ -527,17 +537,20 @@ async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     index = context.user_data['question_index']
     if index < len(quiz['questions']):
         question = quiz['questions'][index]
+        options = question.get('options', [])
+        correct_option_id = question.get('correct_option_id', 0)
+        if correct_option_id is None or not isinstance(correct_option_id, int) or correct_option_id < 0 or correct_option_id >= len(options):
+            correct_option_id = 0
         poll_message = await update.effective_chat.send_poll(
             question=question['question'],
-            options=question['options'],
+            options=options,
             type=Poll.QUIZ,
-            correct_option_id=question['correct_option_id'],
+            correct_option_id=correct_option_id,
             explanation=question.get('explanation', ''),
             is_anonymous=False,
             open_period=quiz.get('timer', 15)
         )
         context.user_data['current_poll_id'] = poll_message.poll.id
-        # Return TK_WAIT_NEXT so that the "Next" button callback is correctly caught.
         return TK_WAIT_NEXT
     else:
         score = context.user_data['score']
@@ -573,11 +586,15 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
     quiz = context.user_data['quiz']
     index = context.user_data['question_index']
     question = quiz['questions'][index]
-    if selected == question['correct_option_id']:
+    options = question.get('options', [])
+    correct_option_id = question.get('correct_option_id', 0)
+    if correct_option_id is None or not isinstance(correct_option_id, int) or correct_option_id < 0 or correct_option_id >= len(options):
+        correct_option_id = 0
+    if selected == correct_option_id:
         context.user_data['score'] += 1
         feedback = "Correct!"
     else:
-        correct_option = question['options'][question['correct_option_id']]
+        correct_option = options[correct_option_id]
         feedback = f"Incorrect. The correct answer was: {correct_option}"
     if question.get('explanation'):
         feedback += f"\nExplanation: {question['explanation']}"
@@ -587,7 +604,7 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "poll_id": poll_answer.poll_id,
         "selected_option": selected,
         "question": question['question'],
-        "correct_option": question['options'][question['correct_option_id']],
+        "correct_option": options[correct_option_id],
         "timestamp": datetime.utcnow().isoformat()
     }
     save_poll_answer_data(answer_data)
@@ -600,7 +617,7 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
-    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"  # Replace with your actual bot token
+    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"  
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
