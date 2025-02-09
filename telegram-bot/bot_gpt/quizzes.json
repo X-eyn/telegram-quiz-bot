@@ -102,5 +102,28 @@
     "timer": 15,
     "shuffle": true,
     "submit": true
+  },
+  {
+    "quiz_name": "Bacbon",
+    "quiz_description": "",
+    "pre_question": {
+      "type": "photo",
+      "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
+    },
+    "questions": [
+      {
+        "question": "random",
+        "options": [
+          "Xmhdkydkydky",
+          "Dyllxyndy",
+          "Xkydykdku"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
   }
 ]

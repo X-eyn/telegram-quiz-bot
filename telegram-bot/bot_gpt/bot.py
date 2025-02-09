@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import csv
 from datetime import datetime
 from telegram import (
     Update,
@@ -40,6 +41,9 @@ TK_SELECT_QUIZ = 19
 TK_TAKING_QUESTION = 20  # Poll answers are handled globally
 TK_WAIT_NEXT = 21
 
+# Import Conversation state
+IMPORT_WAITING_FILE = 30
+
 # -------------------------------
 # File names for persistent storage
 # -------------------------------
@@ -77,7 +81,7 @@ DEFAULT_QUIZ = {
 # -------------------------------
 def load_quizzes():
     if os.path.exists(QUIZZES_FILE):
-        with open(QUIZZES_FILE, "r") as f:
+        with open(QUIZZES_FILE, "r", encoding="utf-8") as f:
             try:
                 data = json.load(f)
                 if isinstance(data, list):
@@ -92,12 +96,12 @@ def load_quizzes():
 def save_quiz_data(quiz):
     quizzes = load_quizzes()
     quizzes.append(quiz)
-    with open(QUIZZES_FILE, "w") as f:
+    with open(QUIZZES_FILE, "w", encoding="utf-8") as f:
         json.dump(quizzes, f, indent=2)
 
 def save_poll_answer_data(data):
     if os.path.exists(PARTICIPANTS_FILE):
-        with open(PARTICIPANTS_FILE, "r") as f:
+        with open(PARTICIPANTS_FILE, "r", encoding="utf-8") as f:
             try:
                 all_data = json.load(f)
             except json.JSONDecodeError:
@@ -105,7 +109,7 @@ def save_poll_answer_data(data):
     else:
         all_data = []
     all_data.append(data)
-    with open(PARTICIPANTS_FILE, "w") as f:
+    with open(PARTICIPANTS_FILE, "w", encoding="utf-8") as f:
         json.dump(all_data, f, indent=2)
 
 # -------------------------------
@@ -114,7 +118,7 @@ def save_poll_answer_data(data):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [InlineKeyboardButton("Create Quiz", callback_data="create_quiz")],
-        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")]
+        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if update.message:
@@ -281,6 +285,187 @@ async def cr_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return ConversationHandler.END
 
 # -------------------------------
+# IMPORT QUIZZES – Import from JSON/CSV/XLSX
+# -------------------------------
+async def import_quizzes_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please send a document file (JSON, CSV, or XLSX) containing quiz data to import.")
+    return IMPORT_WAITING_FILE
+
+async def import_quizzes_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    document = update.message.document
+    if not document:
+        await update.message.reply_text("No document received. Please send a valid document file.")
+        return IMPORT_WAITING_FILE
+    file_name = document.file_name.lower() if document.file_name else ""
+    file = await document.get_file()
+    temp_path = f"temp_{file_name}"
+    await file.download_to_drive(temp_path)
+    imported_quizzes = []
+    try:
+        if file_name.endswith(".json"):
+            with open(temp_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    imported_quizzes = data
+                else:
+                    imported_quizzes = [data]
+        elif file_name.endswith(".csv"):
+            with open(temp_path, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                quizzes_dict = {}
+                for row in reader:
+                    quiz_name = row.get("quiz_name", "Untitled Quiz")
+                    if quiz_name not in quizzes_dict:
+                        quizzes_dict[quiz_name] = {
+                            "quiz_name": quiz_name,
+                            "quiz_description": row.get("quiz_description", ""),
+                            "pre_question": row.get("pre_question", ""),
+                            "questions": [],
+                            "timer": int(row.get("timer", 15)),
+                            "shuffle": row.get("shuffle", "False") == "True",
+                            "submit": row.get("submit", "False") == "True"
+                        }
+                    question = {
+                        "question": row.get("question", ""),
+                        "options": row.get("options", "").split(";"),
+                        "correct_option_id": int(row.get("correct_option_id", 0)),
+                        "explanation": row.get("explanation", "")
+                    }
+                    quizzes_dict[quiz_name]["questions"].append(question)
+                imported_quizzes = list(quizzes_dict.values())
+        elif file_name.endswith(".xlsx"):
+            from openpyxl import load_workbook
+            wb = load_workbook(filename=temp_path)
+            ws = wb.active
+            headers = [cell.value for cell in next(ws.iter_rows(min_row=1, max_row=1))]
+            quizzes_dict = {}
+            for row in ws.iter_rows(min_row=2, values_only=True):
+                row_dict = dict(zip(headers, row))
+                quiz_name = row_dict.get("quiz_name", "Untitled Quiz")
+                if quiz_name not in quizzes_dict:
+                    quizzes_dict[quiz_name] = {
+                        "quiz_name": quiz_name,
+                        "quiz_description": row_dict.get("quiz_description", ""),
+                        "pre_question": row_dict.get("pre_question", ""),
+                        "questions": [],
+                        "timer": int(row_dict.get("timer", 15)) if row_dict.get("timer") else 15,
+                        "shuffle": str(row_dict.get("shuffle", "False")) == "True",
+                        "submit": str(row_dict.get("submit", "False")) == "True"
+                    }
+                question = {
+                    "question": row_dict.get("question", ""),
+                    "options": row_dict.get("options", "").split(";") if row_dict.get("options") else [],
+                    "correct_option_id": int(row_dict.get("correct_option_id", 0)),
+                    "explanation": row_dict.get("explanation", "")
+                }
+                quizzes_dict[quiz_name]["questions"].append(question)
+            imported_quizzes = list(quizzes_dict.values())
+        else:
+            await update.message.reply_text("Unsupported file type. Please send a JSON, CSV, or XLSX file.")
+            os.remove(temp_path)
+            return ConversationHandler.END
+    except Exception as e:
+        await update.message.reply_text(f"Error processing file: {e}")
+        os.remove(temp_path)
+        return ConversationHandler.END
+    os.remove(temp_path)
+    existing_quizzes = load_quizzes()
+    existing_quizzes.extend(imported_quizzes)
+    with open(QUIZZES_FILE, "w", encoding="utf-8") as f:
+        json.dump(existing_quizzes, f, indent=2)
+    await update.message.reply_text(f"Successfully imported {len(imported_quizzes)} quizzes!")
+    return ConversationHandler.END
+
+async def import_quizzes_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Import cancelled.")
+    return ConversationHandler.END
+
+# -------------------------------
+# EXPORT QUIZZES – Export quizzes to JSON, CSV, and XLSX
+# -------------------------------
+async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    quizzes = load_quizzes()
+    if not quizzes:
+        await update.message.reply_text("No quizzes found to export.")
+        return
+
+    # The JSON file already exists (QUIZZES_FILE)
+    json_file = QUIZZES_FILE
+
+    # Export to CSV
+    csv_file = "quizzes_export.csv"
+    with open(csv_file, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "timer", "shuffle", "submit"])
+        for quiz in quizzes:
+            pre_question = ""
+            if isinstance(quiz.get("pre_question"), dict):
+                if quiz["pre_question"].get("type") == "text":
+                    pre_question = quiz["pre_question"].get("content", "")
+                elif quiz["pre_question"].get("type") == "photo":
+                    pre_question = "[PHOTO]"
+            else:
+                pre_question = quiz.get("pre_question", "")
+            for question in quiz.get("questions", []):
+                writer.writerow([
+                    quiz.get("quiz_name", ""),
+                    quiz.get("quiz_description", ""),
+                    pre_question,
+                    question.get("question", ""),
+                    ";".join(question.get("options", [])),
+                    question.get("correct_option_id", 0),
+                    question.get("explanation", ""),
+                    quiz.get("timer", 15),
+                    quiz.get("shuffle", False),
+                    quiz.get("submit", False)
+                ])
+    # Export to XLSX
+    xlsx_file = "quizzes_export.xlsx"
+    try:
+        from openpyxl import Workbook
+        wb = Workbook()
+        ws = wb.active
+        ws.append(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "timer", "shuffle", "submit"])
+        for quiz in quizzes:
+            pre_question = ""
+            if isinstance(quiz.get("pre_question"), dict):
+                if quiz["pre_question"].get("type") == "text":
+                    pre_question = quiz["pre_question"].get("content", "")
+                elif quiz["pre_question"].get("type") == "photo":
+                    pre_question = "[PHOTO]"
+            else:
+                pre_question = quiz.get("pre_question", "")
+            for question in quiz.get("questions", []):
+                ws.append([
+                    quiz.get("quiz_name", ""),
+                    quiz.get("quiz_description", ""),
+                    pre_question,
+                    question.get("question", ""),
+                    ";".join(question.get("options", [])),
+                    question.get("correct_option_id", 0),
+                    question.get("explanation", ""),
+                    quiz.get("timer", 15),
+                    quiz.get("shuffle", False),
+                    quiz.get("submit", False)
+                ])
+        wb.save(xlsx_file)
+    except ImportError:
+        xlsx_file = None
+
+    chat_id = update.effective_chat.id
+    if os.path.exists(json_file):
+        await context.bot.send_document(chat_id=chat_id, document=open(json_file, "rb"), filename=json_file)
+    if os.path.exists(csv_file):
+        await context.bot.send_document(chat_id=chat_id, document=open(csv_file, "rb"), filename=csv_file)
+    if xlsx_file and os.path.exists(xlsx_file):
+        await context.bot.send_document(chat_id=chat_id, document=open(xlsx_file, "rb"), filename=xlsx_file)
+
+    if os.path.exists(csv_file):
+        os.remove(csv_file)
+    if xlsx_file and os.path.exists(xlsx_file):
+        os.remove(xlsx_file)
+
+# -------------------------------
 # QUIZ TAKING FLOW – Using Native Quiz Polls with Timer and Pre-question Display
 # -------------------------------
 async def tk_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -319,7 +504,6 @@ async def tk_select_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['quiz'] = quiz
     context.user_data['question_index'] = 0
     context.user_data['score'] = 0
-    # Display pre-question if it exists.
     pre_question = quiz.get("pre_question")
     chat_id = query.message.chat_id
     if pre_question:
@@ -416,10 +600,22 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
-    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"  # Replace with your actual bot token
+    TOKEN = "YOUR_BOT_API_TOKEN"  # Replace with your actual bot token
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("export_quizzes", export_quizzes_handler))
+    app.add_handler(CommandHandler("import_quizzes", import_quizzes_start))
+
+    import_conversation = ConversationHandler(
+        entry_points=[CommandHandler("import_quizzes", import_quizzes_start)],
+        states={
+            IMPORT_WAITING_FILE: [MessageHandler(filters.Document.ALL, import_quizzes_file)]
+        },
+        fallbacks=[CommandHandler("cancel", import_quizzes_cancel)],
+        allow_reentry=True,
+    )
+    app.add_handler(import_conversation)
 
     quiz_creation_conv = ConversationHandler(
         entry_points=[CallbackQueryHandler(cr_entry, pattern="^create_quiz$")],
