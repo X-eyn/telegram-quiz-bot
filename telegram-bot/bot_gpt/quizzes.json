@@ -125,5 +125,38 @@
     "timer": 15,
     "shuffle": true,
     "submit": true
+  },
+  {
+    "quiz_name": "Excel Test",
+    "quiz_description": "",
+    "pre_question": {
+      "type": "photo",
+      "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
+    },
+    "questions": [
+      {
+        "question": "What is xlsx?",
+        "options": [
+          "Csv",
+          "Excel"
+        ],
+        "correct_option_id": 1,
+        "explanation": ""
+      },
+      {
+        "question": "What sjskskksk",
+        "options": [
+          "Jskskskd",
+          "Fjdksksk",
+          "Fmdkdmdm",
+          "Cngmtllt"
+        ],
+        "correct_option_id": 1,
+        "explanation": ""
+      }
+    ],
+    "timer": 20,
+    "shuffle": true,
+    "submit": true
   }
 ]

@@ -38,7 +38,7 @@ CR_SUBMIT = 8
 
 # Quiz Taking states
 TK_SELECT_QUIZ = 19
-TK_TAKING_QUESTION = 20  # Poll answers are handled globally
+TK_TAKING_QUESTION = 20  # Not used in conversation handler; replaced by TK_WAIT_NEXT
 TK_WAIT_NEXT = 21
 
 # Import Conversation state
@@ -161,7 +161,6 @@ async def cr_skip_description(update: Update, context: ContextTypes.DEFAULT_TYPE
 async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Check if the message contains a photo; if so, store its file_id.
     if update.message.photo:
-        # Use the highest resolution photo.
         context.user_data['pre_question'] = {"type": "photo", "file_id": update.message.photo[-1].file_id}
     else:
         context.user_data['pre_question'] = {"type": "text", "content": update.message.text}
@@ -538,7 +537,8 @@ async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             open_period=quiz.get('timer', 15)
         )
         context.user_data['current_poll_id'] = poll_message.poll.id
-        return TK_TAKING_QUESTION
+        # Return TK_WAIT_NEXT so that the "Next" button callback is correctly caught.
+        return TK_WAIT_NEXT
     else:
         score = context.user_data['score']
         total = len(quiz['questions'])
@@ -600,7 +600,7 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
-    TOKEN = "YOUR_BOT_API_TOKEN"  # Replace with your actual bot token
+    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"  # Replace with your actual bot token
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
