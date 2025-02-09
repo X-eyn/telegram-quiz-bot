@@ -1,0 +1,5 @@
+python-telegram-bot==20.7
+python-dotenv==1.0.0
+pillow
+pytz
+APScheduler>=3.6.3

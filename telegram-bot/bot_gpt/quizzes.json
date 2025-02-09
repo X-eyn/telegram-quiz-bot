@@ -1,0 +1,106 @@
+[
+  {
+    "quiz_name": "Animals",
+    "quiz_description": "",
+    "pre_question": "",
+    "questions": [
+      {
+        "question": "Cow?",
+        "options": [
+          "Mooo",
+          "Meow",
+          "Baarkk"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "Animals2",
+    "quiz_description": "",
+    "pre_question": "Quiz image",
+    "questions": [
+      {
+        "question": "WHAT IS THE IMAGE",
+        "options": [
+          "telgram",
+          "Google",
+          "Yahoo"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 16,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "Ueuwjej",
+    "quiz_description": "",
+    "pre_question": "",
+    "questions": [
+      {
+        "question": "Vkhflyfyl",
+        "options": [
+          "Kxgdkgd",
+          "Jxgktxkg"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 16,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "Test1",
+    "quiz_description": "",
+    "pre_question": {
+      "type": "photo",
+      "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
+    },
+    "questions": [
+      {
+        "question": "What is the image?",
+        "options": [
+          "Telegram",
+          "Microsoft",
+          "Nintendo"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  },
+  {
+    "quiz_name": "Pokuyt",
+    "quiz_description": "",
+    "pre_question": {
+      "type": "photo",
+      "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
+    },
+    "questions": [
+      {
+        "question": "Food xtlct",
+        "options": [
+          "Txltxtxtx",
+          "Kxrxkrxkrkrx"
+        ],
+        "correct_option_id": 0,
+        "explanation": ""
+      }
+    ],
+    "timer": 15,
+    "shuffle": true,
+    "submit": true
+  }
+]

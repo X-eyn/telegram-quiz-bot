@@ -1,0 +1,162 @@
+body {
+    font-family: sans-serif;
+    background-color: #f0f2f5; /* Light grey background - similar to Telegram */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the start of the container */
+    min-height: 100vh; /* Ensure full viewport height */
+}
+
+.container {
+    background-color: #fff; /* White container background */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%;
+    max-width: 700px; /* Limit container width */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+h1, h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.form-group textarea {
+    resize: vertical; /* Allow vertical resizing of textarea */
+    min-height: 80px;
+}
+
+#questions-container {
+    margin-top: 20px;
+}
+
+.question-form {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.question-form h3 {
+    margin-top: 0;
+    color: #444;
+}
+
+.question-form .form-group label {
+    font-weight: normal; /* Options labels don't need to be bold */
+}
+
+.question-form .options-group {
+    margin-top: 10px;
+}
+
+.question-form .option-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.question-form .option-input label {
+    margin-right: 10px;
+    margin-bottom: 0; /* Reset label margin for option inputs */
+    font-weight: normal;
+}
+
+.question-form .option-input input[type="text"] {
+    margin-right: 10px;
+    width: calc(100% - 100px); /* Adjust width to accommodate label and radio button */
+}
+
+.question-form .correct-answer-radio {
+    margin-left: auto; /* Push radio button to the right */
+}
+
+
+#add-question-button,
+#publish-quiz-button,
+#cancel-button,
+#edit-quiz-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #0088cc; /* Telegram Blue */
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+#publish-quiz-button:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
+
+#cancel-button {
+    background-color: #dc3545; /* Red for Cancel */
+}
+
+#edit-quiz-button {
+    background-color: #6c757d; /* Grey for Edit */
+}
+
+.actions {
+    margin-top: 30px;
+    text-align: right; /* Align buttons to the right */
+}
+
+#quiz-preview-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+#quiz-preview-container h3 {
+    margin-top: 0;
+}
+
+#quiz-preview-container .preview-question {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+}
+
+#quiz-preview-container .preview-question:last-child {
+    border-bottom: none;
+}
+
+#quiz-preview-container .preview-options li {
+    margin-bottom: 5px;
+}
+
+#quiz-preview-container .correct-answer {
+    font-weight: bold;
+    color: green; /* Highlight correct answer */
+}

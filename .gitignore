@@ -131,3 +131,6 @@ dmypy.json
 # JSON wit tokens for bot, mongodb, heroku
 TOKEN.json
 venv-quizbot
+
+
+

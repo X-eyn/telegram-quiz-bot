@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Creator WebApp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create a New Quiz</h1>
+
+        <div class="quiz-details">
+            <h2>Quiz Details</h2>
+            <div class="form-group">
+                <label for="quiz-title">Quiz Title:</label>
+                <input type="text" id="quiz-title" placeholder="Enter quiz title" required>
+            </div>
+            <div class="form-group">
+                <label for="quiz-description">Quiz Description (Optional):</label>
+                <textarea id="quiz-description" placeholder="Enter quiz description"></textarea>
+            </div>
+        </div>
+
+        <div class="question-creator">
+            <h2>Create Questions</h2>
+            <div id="questions-container">
+                <!-- Questions will be added here dynamically by JavaScript -->
+            </div>
+            <button id="add-question-button">Add Question</button>
+        </div>
+
+        <div class="quiz-review" style="display: none;"> <!-- Initially hidden -->
+            <h2>Quiz Review</h2>
+            <div id="quiz-preview-container">
+                <!-- Quiz preview will be displayed here -->
+            </div>
+            <button id="edit-quiz-button">Edit Quiz</button>
+        </div>
+
+        <div class="actions">
+            <button id="preview-quiz-button">Preview Quiz</button>  <!-- New Preview Quiz Button -->
+            <button id="publish-quiz-button" disabled>Publish Quiz</button>
+            <button id="cancel-button">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

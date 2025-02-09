@@ -1,0 +1,117 @@
+{
+    "20250209095823": {
+        "poll_id_telegram": "6145460380752675174",
+        "unique_poll_id": "20250209095823",
+        "question": "\"Favorite",
+        "options": [
+            "Language?\"",
+            "\"Python\"",
+            "\"JavaScript\"",
+            "\"C++\"",
+            "\"Java\u201d"
+        ],
+        "created_by": 1006638117,
+        "chat_id": -1002292505032,
+        "start_time": "2025-02-09T09:58:23.402507",
+        "votes": {
+            "0": [],
+            "1": [
+                1006638117
+            ],
+            "2": [],
+            "3": [],
+            "4": []
+        },
+        "message_id": 54,
+        "end_time": "2025-02-09T09:58:36.257465",
+        "final_results": {
+            "question": "\"Favorite",
+            "total_voter_count": 1,
+            "is_closed": true,
+            "id": "6145460380752675174",
+            "explanation_entities": [],
+            "type": "regular",
+            "is_anonymous": false,
+            "allows_multiple_answers": false,
+            "options": [
+                {
+                    "voter_count": 0,
+                    "text": "Language?\""
+                },
+                {
+                    "voter_count": 1,
+                    "text": "\"Python\""
+                },
+                {
+                    "voter_count": 0,
+                    "text": "\"JavaScript\""
+                },
+                {
+                    "voter_count": 0,
+                    "text": "\"C++\""
+                },
+                {
+                    "voter_count": 0,
+                    "text": "\"Java\u201d"
+                }
+            ],
+            "close_date": null
+        }
+    },
+    "20250209100218": {
+        "poll_id_telegram": "6145460380752675175",
+        "unique_poll_id": "20250209100218",
+        "question": "\"TESTER\"",
+        "options": [
+            "\"Python\"",
+            "\"JavaScript\"",
+            "\"C++\"",
+            "\"Java\u201d"
+        ],
+        "created_by": 1006638117,
+        "chat_id": -1002292505032,
+        "start_time": "2025-02-09T10:02:18.019171",
+        "votes": {
+            "0": [],
+            "1": [
+                {
+                    "user_id": 1006638117,
+                    "username": "A_K_ATSUKI"
+                }
+            ],
+            "2": [],
+            "3": []
+        },
+        "message_id": 63,
+        "end_time": "2025-02-09T10:02:34.927574",
+        "final_results": {
+            "question": "\"TESTER\"",
+            "id": "6145460380752675175",
+            "is_anonymous": false,
+            "type": "regular",
+            "options": [
+                {
+                    "voter_count": 0,
+                    "text": "\"Python\""
+                },
+                {
+                    "voter_count": 1,
+                    "text": "\"JavaScript\""
+                },
+                {
+                    "voter_count": 0,
+                    "text": "\"C++\""
+                },
+                {
+                    "voter_count": 0,
+                    "text": "\"Java\u201d"
+                }
+            ],
+            "explanation_entities": [],
+            "allows_multiple_answers": false,
+            "is_closed": true,
+            "total_voter_count": 1,
+            "close_date": null
+        }
+    }
+}
