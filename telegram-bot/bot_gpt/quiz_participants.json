@@ -160,5 +160,248 @@
     "question": "Whats 2 + 3",
     "correct_option": "5",
     "timestamp": "2025-02-09T10:30:01.275103"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367844",
+    "selected_option": 0,
+    "question": "What is in the image ?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T03:48:01.958255"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367845",
+    "selected_option": 2,
+    "question": "What is 2+3?",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T03:48:10.222491"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367848",
+    "selected_option": 0,
+    "question": "What is this in the image?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T03:52:08.197456"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367849",
+    "selected_option": 1,
+    "question": "2+3?",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T03:52:13.725645"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234592",
+    "selected_option": 0,
+    "question": "What is this in the image?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T06:00:32.728039"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234593",
+    "selected_option": 1,
+    "question": "What is xlsx?",
+    "correct_option": "Excel",
+    "timestamp": "2025-02-13T06:01:15.623379"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234594",
+    "selected_option": 0,
+    "question": "What is in the image ?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T06:02:21.104339"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234595",
+    "selected_option": 0,
+    "question": "random",
+    "correct_option": "Xmhdkydkydky",
+    "timestamp": "2025-02-13T06:04:49.575695"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234596",
+    "selected_option": 0,
+    "question": "What is this in the image?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T06:11:24.868860"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234600",
+    "selected_option": 1,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:14:33.307245"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367858",
+    "selected_option": 1,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:16:35.175649"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6156834257311367859",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T06:16:40.498484"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6154243691952234601",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:17:08.045532"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6154243691952234602",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:33:09.611520"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6154243691952234603",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T06:33:14.192498"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234606",
+    "selected_option": 1,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:35:36.327445"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234607",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T06:35:43.911349"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234608",
+    "selected_option": 0,
+    "question": "What is in the image ?",
+    "correct_option": "Quizbot",
+    "timestamp": "2025-02-13T06:35:57.955385"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154243691952234609",
+    "selected_option": 1,
+    "question": "What is 2+3?",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:36:01.612707"
+  },
+  {
+    "user_id": 5195926831,
+    "username": "abir11h",
+    "poll_id": "6154243691952234610",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:40:16.288538"
+  },
+  {
+    "user_id": 5195926831,
+    "username": "abir11h",
+    "poll_id": "6154243691952234611",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T06:40:24.382719"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6154243691952234613",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T06:53:04.881337"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6154243691952234614",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T06:53:09.498307"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154248167308132838",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-13T08:13:42.126631"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6154248167308132839",
+    "selected_option": 1,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-13T08:13:45.865588"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6165588457222570494",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-17T06:25:18.724209"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6165588457222570495",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-17T06:25:23.913153"
   }
 ]

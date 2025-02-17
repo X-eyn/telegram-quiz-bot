@@ -1,271 +1,366 @@
 [
-  {
-    "quiz_name": "Animals",
-    "quiz_description": "",
-    "pre_question": "",
-    "questions": [
-      {
-        "question": "Cow?",
-        "options": [
-          "Mooo",
-          "Meow",
-          "Baarkk"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Animals2",
-    "quiz_description": "",
-    "pre_question": "Quiz image",
-    "questions": [
-      {
-        "question": "WHAT IS THE IMAGE",
-        "options": [
-          "telgram",
-          "Google",
-          "Yahoo"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 16,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Ueuwjej",
-    "quiz_description": "",
-    "pre_question": "",
-    "questions": [
-      {
-        "question": "Vkhflyfyl",
-        "options": [
-          "Kxgdkgd",
-          "Jxgktxkg"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 16,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Test1",
-    "quiz_description": "",
-    "pre_question": {
-      "type": "photo",
-      "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
+    {
+      "quiz_name": "Animals",
+      "quiz_description": "",
+      "pre_question": "",
+      "questions": [
+        {
+          "question": "Cow?",
+          "options": [
+            "Mooo",
+            "Meow",
+            "Baarkk"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
     },
-    "questions": [
-      {
-        "question": "What is the image?",
-        "options": [
-          "Telegram",
-          "Microsoft",
-          "Nintendo"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Pokuyt",
-    "quiz_description": "",
-    "pre_question": {
-      "type": "photo",
-      "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
+    {
+      "quiz_name": "Animals2",
+      "quiz_description": "",
+      "pre_question": "Quiz image",
+      "questions": [
+        {
+          "question": "WHAT IS THE IMAGE",
+          "options": [
+            "telgram",
+            "Google",
+            "Yahoo"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 16,
+      "shuffle": true,
+      "submit": true
     },
-    "questions": [
-      {
-        "question": "Food xtlct",
-        "options": [
-          "Txltxtxtx",
-          "Kxrxkrxkrkrx"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Bacbon",
-    "quiz_description": "",
-    "pre_question": {
-      "type": "photo",
-      "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
+    {
+      "quiz_name": "Ueuwjej",
+      "quiz_description": "",
+      "pre_question": "",
+      "questions": [
+        {
+          "question": "Vkhflyfyl",
+          "options": [
+            "Kxgdkgd",
+            "Jxgktxkg"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 16,
+      "shuffle": true,
+      "submit": true
     },
-    "questions": [
-      {
-        "question": "random",
-        "options": [
-          "Xmhdkydkydky",
-          "Dyllxyndy",
-          "Xkydykdku"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Excel Test",
-    "quiz_description": "",
-    "pre_question": {
-      "type": "photo",
-      "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
-    },
-    "questions": [
-      {
-        "question": "What is xlsx?",
-        "options": [
-          "Csv",
-          "Excel"
-        ],
-        "correct_option_id": 1,
-        "explanation": ""
+    {
+      "quiz_name": "Test1",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
       },
-      {
-        "question": "What sjskskksk",
-        "options": [
-          "Jskskskd",
-          "Fjdksksk",
-          "Fmdkdmdm",
-          "Cngmtllt"
-        ],
-        "correct_option_id": 1,
-        "explanation": ""
-      }
-    ],
-    "timer": 20,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "Hello",
-    "quiz_description": "HelloWorld",
-    "pre_question": null,
-    "questions": [
-      {
-        "question": "Whats 2 + 3",
-        "options": [
-          "5",
-          "6",
-          "7"
-        ],
-        "correct_option_id": 0,
-        "explanation": ""
-      }
-    ],
-    "timer": 20,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "quiz1",
-    "quiz_description": "",
-    "pre_question": null,
-    "questions": [
-      {
-        "question": "5+5",
-        "options": [
-          "10",
-          "15",
-          "23"
-        ],
-        "correct_option_id": null,
-        "explanation": ""
+      "questions": [
+        {
+          "question": "What is the image?",
+          "options": [
+            "Telegram",
+            "Microsoft",
+            "Nintendo"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Pokuyt",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
       },
-      {
-        "question": "7+20",
-        "options": [
-          "23",
-          "27",
-          "207"
-        ],
-        "correct_option_id": null,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "quiz3",
-    "quiz_description": "",
-    "pre_question": null,
-    "questions": [
-      {
-        "question": "Capital of France",
-        "options": [
-          "rewtyu",
-          "ewrtyu",
-          "rwety"
-        ],
-        "correct_option_id": null,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "quiz4",
-    "quiz_description": "",
-    "pre_question": null,
-    "questions": [
-      {
-        "question": "wfkjwfihwf",
-        "options": [
-          "wdofnwonf",
-          "lkdfniwnfon"
-        ],
-        "correct_option_id": null,
-        "explanation": ""
-      }
-    ],
-    "timer": 15,
-    "shuffle": true,
-    "submit": true
-  },
-  {
-    "quiz_name": "TestQuizSifat",
-    "quiz_description": "",
-    "pre_question": null,
-    "questions": [
-      {
-        "question": "2 plus 3",
-        "options": [
-          "5",
-          "6",
-          "7"
-        ],
-        "correct_option_id": null,
-        "explanation": ""
-      }
-    ],
-    "timer": 12,
-    "shuffle": true,
-    "submit": true
-  }
-]
+      "questions": [
+        {
+          "question": "Food xtlct",
+          "options": [
+            "Txltxtxtx",
+            "Kxrxkrxkrkrx"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Bacbon",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAPjZ6hlGw3i91YSZOmlH7JowP8r8nAAAjHCMRuNvEBV8rZzcJrusnIBAAMCAAN5AAM2BA"
+      },
+      "questions": [
+        {
+          "question": "random",
+          "options": [
+            "Xmhdkydkydky",
+            "Dyllxyndy",
+            "Xkydykdku"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Excel Test",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAIBG2eoaX2XmmohF_7MR1Y0cX1Ob6ttAAI5wjEbjbxAVUByK50zMvUmAQADAgADeQADNgQ"
+      },
+      "questions": [
+        {
+          "question": "What is xlsx?",
+          "options": [
+            "Csv",
+            "Excel"
+          ],
+          "correct_option_id": 1,
+          "explanation": ""
+        },
+        {
+          "question": "What sjskskksk",
+          "options": [
+            "Jskskskd",
+            "Fjdksksk",
+            "Fmdkdmdm",
+            "Cngmtllt"
+          ],
+          "correct_option_id": 1,
+          "explanation": ""
+        }
+      ],
+      "timer": 20,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Hello",
+      "quiz_description": "HelloWorld",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "Whats 2 + 3",
+          "options": [
+            "5",
+            "6",
+            "7"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 20,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "quiz1",
+      "quiz_description": "",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "5+5",
+          "options": [
+            "10",
+            "15",
+            "23"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        },
+        {
+          "question": "7+20",
+          "options": [
+            "23",
+            "27",
+            "207"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "quiz3",
+      "quiz_description": "",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "Capital of France",
+          "options": [
+            "rewtyu",
+            "ewrtyu",
+            "rwety"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "quiz4",
+      "quiz_description": "",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "wfkjwfihwf",
+          "options": [
+            "wdofnwonf",
+            "lkdfniwnfon"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "TestQuizSifat",
+      "quiz_description": "",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "2 plus 3",
+          "options": [
+            "5",
+            "6",
+            "7"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        }
+      ],
+      "timer": 12,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "SAMPLE QUIZ TEST",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAIBmWetaoNvTfrR2-6yrD2AiYYEATjhAAIMwjEbI3hxVZgKy1lEzZlfAQADAgADeQADNgQ"
+      },
+      "questions": [
+        {
+          "question": "What is in the image ?",
+          "options": [
+            "Quizbot",
+            "Google",
+            "Yahoo"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        },
+        {
+          "question": "What is 2+3?",
+          "options": [
+            "2",
+            "4",
+            "5",
+            "6"
+          ],
+          "correct_option_id": 2,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Example Quiz",
+      "quiz_description": "",
+      "pre_question": {
+        "type": "photo",
+        "file_id": "AgACAgUAAxkBAAIBmWetaoNvTfrR2-6yrD2AiYYEATjhAAIMwjEbI3hxVZgKy1lEzZlfAQADAgADeQADNgQ"
+      },
+      "questions": [
+        {
+          "question": "What is this in the image?",
+          "options": [
+            "Quizbot",
+            "Google bot",
+            "Yahoo hot"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        },
+        {
+          "question": "2+3?",
+          "options": [
+            "5",
+            "6",
+            "7"
+          ],
+          "correct_option_id": 0,
+          "explanation": ""
+        }
+      ],
+      "timer": 16,
+      "shuffle": true,
+      "submit": true
+    },
+    {
+      "quiz_name": "Sameer",
+      "quiz_description": "",
+      "pre_question": null,
+      "questions": [
+        {
+          "question": "2+4",
+          "options": [
+            "5",
+            "6"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        },
+        {
+          "question": "5+7",
+          "options": [
+            "15",
+            "12"
+          ],
+          "correct_option_id": null,
+          "explanation": ""
+        }
+      ],
+      "timer": 15,
+      "shuffle": true,
+      "submit": true
+    }
+  ]

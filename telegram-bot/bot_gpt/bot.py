@@ -2,6 +2,7 @@ import logging
 import json
 import os
 import csv
+import asyncio
 from datetime import datetime
 from telegram import (
     Update,
@@ -11,6 +12,7 @@ from telegram import (
     KeyboardButton,
     KeyboardButtonPollType,
     ReplyKeyboardMarkup,
+    BotCommand,
 )
 from telegram.ext import (
     Application,
@@ -118,18 +120,18 @@ def save_poll_answer_data(data):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [InlineKeyboardButton("Create Quiz", callback_data="create_quiz")],
-        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")]
+        [InlineKeyboardButton("Take Quiz", callback_data="take_quiz")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if update.message:
         await update.message.reply_text(
             "Welcome to the Interactive Quiz Bot!\nPlease choose an option:",
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
         )
     elif update.callback_query:
         await update.callback_query.edit_message_text(
             "Welcome to the Interactive Quiz Bot!\nPlease choose an option:",
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
         )
 
 # -------------------------------
@@ -181,8 +183,7 @@ async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def cr_skip_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if update.effective_chat.type != "private":
         await update.message.reply_text(
-            "Poll creation via button is only available in private chats. "
-            "Please send your quiz poll manually (as a quiz-type poll) to the chat."
+            "Poll creation via button is only available in private chats. Please send your quiz poll manually (as a quiz-type poll) to the chat."
         )
         return CR_ADD_QUESTION
     context.user_data['pre_question'] = None
@@ -210,7 +211,7 @@ async def handle_created_poll(update: Update, context: ContextTypes.DEFAULT_TYPE
     context.user_data.setdefault('questions', []).append(question_data)
     keyboard = [
         [InlineKeyboardButton("Add another question", callback_data="add_another")],
-        [InlineKeyboardButton("Finish questions", callback_data="finish_questions")]
+        [InlineKeyboardButton("Finish questions", callback_data="finish_questions")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Question added! What would you like to do next?", reply_markup=reply_markup)
@@ -551,6 +552,8 @@ async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             open_period=quiz.get('timer', 15)
         )
         context.user_data['current_poll_id'] = poll_message.poll.id
+        # Store the chat id where the poll was sent so subsequent messages use the same chat
+        context.user_data['quiz_chat_id'] = update.effective_chat.id
         return TK_WAIT_NEXT
     else:
         score = context.user_data['score']
@@ -610,14 +613,30 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
     save_poll_answer_data(answer_data)
     keyboard = [[InlineKeyboardButton("Next", callback_data="next_question")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await context.bot.send_message(chat_id=user_id, text=feedback, reply_markup=reply_markup)
+    # Use the stored quiz_chat_id so the feedback and Next button appear in the same chat as the quiz
+    quiz_chat_id = context.user_data.get('quiz_chat_id')
+    if not quiz_chat_id:
+        quiz_chat_id = poll_answer.user.id
+    await context.bot.send_message(chat_id=quiz_chat_id, text=feedback, reply_markup=reply_markup)
     context.user_data['current_poll_id'] = None
+
+# -------------------------------
+# Startup function to set bot commands
+# -------------------------------
+async def on_startup(app: Application) -> None:
+    commands = [
+        BotCommand("start", "Show main menu"),
+        BotCommand("import_quizzes", "Import quizzes from a file"),
+        BotCommand("export_quizzes", "Export quizzes to file"),
+        BotCommand("cancel", "Cancel current operation"),
+    ]
+    await app.bot.set_my_commands(commands)
 
 # -------------------------------
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
-    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"  
+    TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -679,6 +698,10 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info("Interactive Quiz Bot is running...")
 
+    # Initialize the application and set commands before starting polling
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(app.initialize())
+    loop.run_until_complete(on_startup(app))
     app.run_polling()
 
 if __name__ == "__main__":
