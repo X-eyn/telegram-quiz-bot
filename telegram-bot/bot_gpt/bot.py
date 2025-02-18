@@ -727,7 +727,6 @@ async def on_startup(app: Application) -> None:
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
-    # IMPORTANT: Do not hard-code your token in production.
     TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"
     app = Application.builder().token(TOKEN).build()
 
