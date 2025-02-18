@@ -475,5 +475,41 @@
     "question": "What is this image?",
     "correct_option": "C",
     "timestamp": "2025-02-18T07:55:18.023428"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016587",
+    "selected_option": 0,
+    "question": "What is this image?",
+    "correct_option": "A",
+    "timestamp": "2025-02-18T08:39:17.076081"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016588",
+    "selected_option": 0,
+    "question": "What is this image?",
+    "correct_option": "A",
+    "timestamp": "2025-02-18T08:39:42.179274"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016589",
+    "selected_option": 1,
+    "question": "What is this image?",
+    "correct_option": "B",
+    "timestamp": "2025-02-18T08:39:49.213462"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016590",
+    "selected_option": 2,
+    "question": "What is this image?",
+    "correct_option": "C",
+    "timestamp": "2025-02-18T08:39:54.695722"
   }
 ]

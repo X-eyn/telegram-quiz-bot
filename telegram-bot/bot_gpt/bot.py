@@ -41,8 +41,8 @@ CR_QUESTION_IMAGE = 9  # New state for optional question image
 
 # Quiz Taking states
 TK_SELECT_QUIZ = 19
-TK_TAKING_QUESTION = 20  # Not used; we now use TK_WAIT_NEXT
-TK_WAIT_NEXT = 21
+TK_READY = 20       # New state: after selecting a quiz, show ready message
+TK_RUNNING = 21     # Quiz is running (auto-advance after each answer)
 
 # Import Conversation state
 IMPORT_WAITING_FILE = 30
@@ -533,8 +533,9 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
 
 
 # -------------------------------
-# QUIZ TAKING FLOW – Using Native Quiz Polls with Timer and Pre-question Display
+# QUIZ TAKING FLOW – Using Native Quiz Polls with Timer, Ready Message, and Auto-advance
 # -------------------------------
+# Entry: load quiz list for selection.
 async def tk_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
@@ -544,8 +545,9 @@ async def tk_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         context.user_data['quiz'] = quiz
         context.user_data['question_index'] = 0
         context.user_data['score'] = 0
+        # If no quizzes exist, immediately start the quiz
         await query.edit_message_text(f"Starting quiz: {quiz['quiz_name']}\n{quiz['quiz_description']}")
-        return await tk_send_poll(update, context)
+        return await tk_send_poll(query, context)
     else:
         keyboard = []
         for idx, quiz in enumerate(quizzes):
@@ -559,6 +561,7 @@ async def tk_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         return TK_SELECT_QUIZ
 
 
+# When a quiz is selected, show a ready screen with quiz details.
 async def tk_select_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
@@ -572,39 +575,69 @@ async def tk_select_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['quiz'] = quiz
     context.user_data['question_index'] = 0
     context.user_data['score'] = 0
-    pre_question = quiz.get("pre_question")
+    # Build the ready message with quiz details.
+    num_questions = len(quiz.get("questions", []))
+    timer = quiz.get("timer", 15)
+    ready_text = (
+        f"Get ready for '{quiz['quiz_name']}'!\n"
+        f"Number of questions: {num_questions}\n"
+        f"Timer per question: {timer} seconds\n\n"
+        "Tap 'Ready' to begin or send /cancel to exit."
+    )
+    ready_button = InlineKeyboardMarkup([[InlineKeyboardButton("Ready", callback_data="ready")]])
+    await query.edit_message_text(ready_text, reply_markup=ready_button)
+    return TK_READY
+
+
+# Handler for the "Ready" button. A 3-second countdown is shown before starting the quiz.
+async def tk_ready_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    query = update.callback_query
+    await query.answer()
     chat_id = query.message.chat_id
-    if pre_question:
-        if isinstance(pre_question, dict) and pre_question.get("type") == "photo":
-            await context.bot.send_photo(
-                chat_id=chat_id,
-                photo=pre_question["file_id"],
-                caption="Context for the quiz:"
-            )
-        elif isinstance(pre_question, dict) and pre_question.get("type") == "text":
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text=pre_question.get("content", "")
-            )
-        elif isinstance(pre_question, str):
-            await context.bot.send_message(chat_id=chat_id, text=pre_question)
-    await query.edit_message_text(f"Starting quiz: {quiz['quiz_name']}\n{quiz['quiz_description']}")
-    return await tk_send_poll(update, context)
+    # Send a countdown message
+    await context.bot.send_message(chat_id=chat_id, text="Starting in 3...")
+    for i in range(2, 0, -1):
+        await asyncio.sleep(1)
+        await context.bot.send_message(chat_id=chat_id, text=f"Starting in {i}...")
+    await asyncio.sleep(1)
+    # Start the quiz by sending the first question.
+    return await tk_send_poll(query, context)
 
 
+# Modified tk_send_poll with a fix to handle CallbackQuery objects.
 async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     quiz = context.user_data['quiz']
     index = context.user_data['question_index']
+    # Determine chat_id either from update or stored data.
+    chat_id = None
+    if update is not None:
+        if hasattr(update, 'effective_chat') and update.effective_chat:
+            chat_id = update.effective_chat.id
+        elif hasattr(update, 'message') and update.message:
+            chat_id = update.message.chat.id
+        else:
+            # If update is a CallbackQuery, use update.message.chat.id
+            if hasattr(update, 'message') and update.message:
+                chat_id = update.message.chat.id
+            else:
+                chat_id = context.user_data.get('quiz_chat_id')
+    else:
+        chat_id = context.user_data.get('quiz_chat_id')
+    
+    if not chat_id:
+         chat_id = context.user_data.get('quiz_chat_id')
+    
     if index < len(quiz['questions']):
         question = quiz['questions'][index]
         # If this question has an image, send it first.
         if "image" in question and question["image"]:
-            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=question["image"])
+            await context.bot.send_photo(chat_id=chat_id, photo=question["image"])
         options = question.get('options', [])
         correct_option_id = question.get('correct_option_id', 0)
         if correct_option_id is None or not isinstance(correct_option_id, int) or correct_option_id < 0 or correct_option_id >= len(options):
             correct_option_id = 0
-        poll_message = await update.effective_chat.send_poll(
+        poll_message = await context.bot.send_poll(
+            chat_id=chat_id,
             question=question['question'],
             options=options,
             type=Poll.QUIZ,
@@ -614,36 +647,21 @@ async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             open_period=quiz.get('timer', 15)
         )
         context.user_data['current_poll_id'] = poll_message.poll.id
-        # Store the chat id where the poll was sent so subsequent messages use the same chat
-        context.user_data['quiz_chat_id'] = update.effective_chat.id
-        return TK_WAIT_NEXT
+        context.user_data['quiz_chat_id'] = chat_id
+        return TK_RUNNING
     else:
         score = context.user_data['score']
         total = len(quiz['questions'])
-        await update.effective_chat.send_message(
+        await context.bot.send_message(
+            chat_id=chat_id,
             text=f"Quiz finished!\nYour score: {score}/{total}\nType /start to return to the main menu."
         )
         return ConversationHandler.END
 
 
-async def tk_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    query = update.callback_query
-    await query.answer()
-    context.user_data['question_index'] += 1
-    return await tk_send_poll(update, context)
-
-
-async def tk_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("Quiz cancelled. Use /start to return to the main menu.")
-    return ConversationHandler.END
-
-
-# -------------------------------
-# Global PollAnswer Handler – Save Participant Data and Provide Feedback
-# -------------------------------
+# Global PollAnswer Handler – Save Participant Data, Provide Feedback, and Auto-advance
 async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     poll_answer = update.poll_answer
-    user_id = poll_answer.user.id
     if 'quiz' not in context.user_data:
         return
     if context.user_data.get('current_poll_id') != poll_answer.poll_id:
@@ -676,14 +694,20 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "timestamp": datetime.utcnow().isoformat()
     }
     save_poll_answer_data(answer_data)
-    keyboard = [[InlineKeyboardButton("Next", callback_data="next_question")]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    # Use the stored quiz_chat_id so the feedback and Next button appear in the same chat as the quiz
     quiz_chat_id = context.user_data.get('quiz_chat_id')
     if not quiz_chat_id:
         quiz_chat_id = poll_answer.user.id
-    await context.bot.send_message(chat_id=quiz_chat_id, text=feedback, reply_markup=reply_markup)
+    await context.bot.send_message(chat_id=quiz_chat_id, text=feedback)
     context.user_data['current_poll_id'] = None
+    # Wait 3 seconds before automatically sending the next question.
+    await asyncio.sleep(3)
+    context.user_data['question_index'] += 1
+    await tk_send_poll(None, context)
+
+
+async def tk_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Quiz cancelled. Use /start to return to the main menu.")
+    return ConversationHandler.END
 
 
 # -------------------------------
@@ -755,7 +779,8 @@ def main():
         entry_points=[CallbackQueryHandler(tk_entry, pattern="^take_quiz$")],
         states={
             TK_SELECT_QUIZ: [CallbackQueryHandler(tk_select_quiz, pattern="^select_quiz_\\d+$")],
-            TK_WAIT_NEXT: [CallbackQueryHandler(tk_next_question, pattern="^next_question$")],
+            TK_READY: [CallbackQueryHandler(tk_ready_handler, pattern="^ready$")],
+            TK_RUNNING: [CommandHandler("cancel", tk_cancel)],
         },
         fallbacks=[CommandHandler("cancel", tk_cancel)],
         allow_reentry=True,
@@ -770,7 +795,6 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info("Interactive Quiz Bot is running...")
 
-    # Initialize the application and set commands before starting polling
     loop = asyncio.get_event_loop()
     loop.run_until_complete(app.initialize())
     loop.run_until_complete(on_startup(app))
