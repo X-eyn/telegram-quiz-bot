@@ -403,5 +403,77 @@
     "question": "5+7",
     "correct_option": "15",
     "timestamp": "2025-02-17T06:25:23.913153"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016568",
+    "selected_option": 0,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-18T06:37:08.862860"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016569",
+    "selected_option": 0,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-18T06:37:23.451048"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016577",
+    "selected_option": 1,
+    "question": "What is this image?",
+    "correct_option": "A",
+    "timestamp": "2025-02-18T07:12:49.415437"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016578",
+    "selected_option": 1,
+    "question": "What is this image?",
+    "correct_option": "B",
+    "timestamp": "2025-02-18T07:12:54.836051"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6170172419983016579",
+    "selected_option": 0,
+    "question": "What is this image?",
+    "correct_option": "C",
+    "timestamp": "2025-02-18T07:12:58.959593"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6169977041920721309",
+    "selected_option": 0,
+    "question": "What is this image?",
+    "correct_option": "A",
+    "timestamp": "2025-02-18T07:55:08.057586"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6169977041920721310",
+    "selected_option": 1,
+    "question": "What is this image?",
+    "correct_option": "B",
+    "timestamp": "2025-02-18T07:55:12.815891"
+  },
+  {
+    "user_id": 1006638117,
+    "username": "A_K_ATSUKI",
+    "poll_id": "6169977041920721311",
+    "selected_option": 2,
+    "question": "What is this image?",
+    "correct_option": "C",
+    "timestamp": "2025-02-18T07:55:18.023428"
   }
 ]

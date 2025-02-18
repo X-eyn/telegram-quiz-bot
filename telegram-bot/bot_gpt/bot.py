@@ -37,6 +37,7 @@ CR_NEXT_QUESTION = 5
 CR_TIMER = 6
 CR_SHUFFLE = 7
 CR_SUBMIT = 8
+CR_QUESTION_IMAGE = 9  # New state for optional question image
 
 # Quiz Taking states
 TK_SELECT_QUIZ = 19
@@ -95,11 +96,13 @@ def load_quizzes():
     else:
         return []
 
+
 def save_quiz_data(quiz):
     quizzes = load_quizzes()
     quizzes.append(quiz)
     with open(QUIZZES_FILE, "w", encoding="utf-8") as f:
         json.dump(quizzes, f, indent=2)
+
 
 def save_poll_answer_data(data):
     if os.path.exists(PARTICIPANTS_FILE):
@@ -113,6 +116,7 @@ def save_poll_answer_data(data):
     all_data.append(data)
     with open(PARTICIPANTS_FILE, "w", encoding="utf-8") as f:
         json.dump(all_data, f, indent=2)
+
 
 # -------------------------------
 # /start Command – Main Menu
@@ -134,8 +138,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply_markup=reply_markup,
         )
 
+
 # -------------------------------
-# QUIZ CREATION FLOW – Using Native Polls for Questions
+# QUIZ CREATION FLOW – Using Native Polls for Questions (with optional images)
 # -------------------------------
 async def cr_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
@@ -145,22 +150,25 @@ async def cr_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await query.edit_message_text("Let's create your quiz!\n\nPlease enter the quiz name:")
     return CR_QUIZ_NAME
 
+
 async def cr_quiz_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['quiz_name'] = update.message.text
     await update.message.reply_text("Enter a description for your quiz (or type /skip to skip):")
     return CR_QUIZ_DESCRIPTION
+
 
 async def cr_quiz_description(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['quiz_description'] = update.message.text
     await update.message.reply_text("Send pre-question text or image (optional, or type /skip to skip):")
     return CR_PRE_QUESTION
 
+
 async def cr_skip_description(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['quiz_description'] = ""
     await update.message.reply_text("No description added.\nSend pre-question text or image (optional, or type /skip to skip):")
     return CR_PRE_QUESTION
 
-# In group chats the poll-request button isn't allowed.
+
 async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if update.effective_chat.type != "private":
         await update.message.reply_text(
@@ -180,6 +188,7 @@ async def cr_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     )
     return CR_ADD_QUESTION
 
+
 async def cr_skip_pre_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if update.effective_chat.type != "private":
         await update.message.reply_text(
@@ -195,6 +204,8 @@ async def cr_skip_pre_question(update: Update, context: ContextTypes.DEFAULT_TYP
     )
     return CR_ADD_QUESTION
 
+
+# Modified to store poll data temporarily and prompt for an optional image.
 async def handle_created_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     poll = update.message.poll
     if poll is None:
@@ -206,16 +217,46 @@ async def handle_created_poll(update: Update, context: ContextTypes.DEFAULT_TYPE
         "question": poll.question,
         "options": [option.text for option in poll.options],
         "correct_option_id": poll.correct_option_id,
-        "explanation": poll.explanation or "",
+        "explanation": poll.explanation or ""
     }
+    # Store temporarily for optional image attachment
+    context.user_data['current_question'] = question_data
+    await update.message.reply_text("Would you like to attach an image to this question? If yes, please send the image now. Otherwise, type /skip.")
+    return CR_QUESTION_IMAGE
+
+
+# Handler when a photo is sent in CR_QUESTION_IMAGE state.
+async def cr_add_question_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    photo_file_id = update.message.photo[-1].file_id
+    question_data = context.user_data.get('current_question')
+    if question_data is None:
+        await update.message.reply_text("No question found. Please send a quiz poll first.")
+        return CR_ADD_QUESTION
+    question_data['image'] = photo_file_id
     context.user_data.setdefault('questions', []).append(question_data)
+    context.user_data.pop('current_question', None)
     keyboard = [
         [InlineKeyboardButton("Add another question", callback_data="add_another")],
         [InlineKeyboardButton("Finish questions", callback_data="finish_questions")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Question added! What would you like to do next?", reply_markup=reply_markup)
+    await update.message.reply_text("Question added with image. What would you like to do next?", reply_markup=reply_markup)
     return CR_NEXT_QUESTION
+
+
+# Handler for skipping image addition.
+async def cr_skip_question_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    question_data = context.user_data.pop('current_question', None)
+    if question_data:
+        context.user_data.setdefault('questions', []).append(question_data)
+    keyboard = [
+        [InlineKeyboardButton("Add another question", callback_data="add_another")],
+        [InlineKeyboardButton("Finish questions", callback_data="finish_questions")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Question added without image. What would you like to do next?", reply_markup=reply_markup)
+    return CR_NEXT_QUESTION
+
 
 async def cr_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
@@ -233,12 +274,14 @@ async def cr_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         await query.edit_message_text("Enter the timer duration (in seconds) for each question:")
         return CR_TIMER
 
+
 async def cr_finish_questions(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if not context.user_data.get('questions'):
         await update.message.reply_text("You haven't added any questions yet. Please add at least one question using the poll button.")
         return CR_ADD_QUESTION
     await update.message.reply_text("Enter the timer duration (in seconds) for each question:")
     return CR_TIMER
+
 
 async def cr_set_timer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
@@ -254,6 +297,7 @@ async def cr_set_timer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     await update.message.reply_text("Do you want to shuffle questions and answer options?", reply_markup=reply_markup)
     return CR_SHUFFLE
 
+
 async def cr_set_shuffle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
@@ -265,6 +309,7 @@ async def cr_set_shuffle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text("Would you like to submit your quiz to the contest?", reply_markup=reply_markup)
     return CR_SUBMIT
+
 
 async def cr_set_submit(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
@@ -294,9 +339,11 @@ async def cr_set_submit(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     await query.message.reply_text("Your quiz has been created! You can take it by selecting 'Take Quiz' from the main menu.")
     return ConversationHandler.END
 
+
 async def cr_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Quiz creation cancelled.")
     return ConversationHandler.END
+
 
 # -------------------------------
 # IMPORT QUIZZES – Import from JSON/CSV/XLSX
@@ -304,6 +351,7 @@ async def cr_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def import_quizzes_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Please send a document file (JSON, CSV, or XLSX) containing quiz data to import.")
     return IMPORT_WAITING_FILE
+
 
 async def import_quizzes_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     document = update.message.document
@@ -345,6 +393,8 @@ async def import_quizzes_file(update: Update, context: ContextTypes.DEFAULT_TYPE
                         "correct_option_id": int(row.get("correct_option_id", 0)),
                         "explanation": row.get("explanation", "")
                     }
+                    if "image" in row and row.get("image", "").strip():
+                        question["image"] = row.get("image", "").strip()
                     quizzes_dict[quiz_name]["questions"].append(question)
                 imported_quizzes = list(quizzes_dict.values())
         elif file_name.endswith(".xlsx"):
@@ -372,6 +422,8 @@ async def import_quizzes_file(update: Update, context: ContextTypes.DEFAULT_TYPE
                     "correct_option_id": int(row_dict.get("correct_option_id", 0)),
                     "explanation": row_dict.get("explanation", "")
                 }
+                if row_dict.get("image"):
+                    question["image"] = row_dict.get("image")
                 quizzes_dict[quiz_name]["questions"].append(question)
             imported_quizzes = list(quizzes_dict.values())
         else:
@@ -390,9 +442,11 @@ async def import_quizzes_file(update: Update, context: ContextTypes.DEFAULT_TYPE
     await update.message.reply_text(f"Successfully imported {len(imported_quizzes)} quizzes!")
     return ConversationHandler.END
 
+
 async def import_quizzes_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Import cancelled.")
     return ConversationHandler.END
+
 
 # -------------------------------
 # EXPORT QUIZZES – Export quizzes to JSON, CSV, and XLSX
@@ -407,7 +461,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
     csv_file = "quizzes_export.csv"
     with open(csv_file, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "timer", "shuffle", "submit"])
+        writer.writerow(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "image", "timer", "shuffle", "submit"])
         for quiz in quizzes:
             pre_question = ""
             if isinstance(quiz.get("pre_question"), dict):
@@ -426,6 +480,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
                     ";".join(question.get("options", [])),
                     question.get("correct_option_id", 0),
                     question.get("explanation", ""),
+                    question.get("image", ""),
                     quiz.get("timer", 15),
                     quiz.get("shuffle", False),
                     quiz.get("submit", False)
@@ -435,7 +490,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
         from openpyxl import Workbook
         wb = Workbook()
         ws = wb.active
-        ws.append(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "timer", "shuffle", "submit"])
+        ws.append(["quiz_name", "quiz_description", "pre_question", "question", "options", "correct_option_id", "explanation", "image", "timer", "shuffle", "submit"])
         for quiz in quizzes:
             pre_question = ""
             if isinstance(quiz.get("pre_question"), dict):
@@ -454,6 +509,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
                     ";".join(question.get("options", [])),
                     question.get("correct_option_id", 0),
                     question.get("explanation", ""),
+                    question.get("image", ""),
                     quiz.get("timer", 15),
                     quiz.get("shuffle", False),
                     quiz.get("submit", False)
@@ -474,6 +530,7 @@ async def export_quizzes_handler(update: Update, context: ContextTypes.DEFAULT_T
         os.remove(csv_file)
     if xlsx_file and os.path.exists(xlsx_file):
         os.remove(xlsx_file)
+
 
 # -------------------------------
 # QUIZ TAKING FLOW – Using Native Quiz Polls with Timer and Pre-question Display
@@ -500,6 +557,7 @@ async def tk_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text("Select a quiz to take:", reply_markup=reply_markup)
         return TK_SELECT_QUIZ
+
 
 async def tk_select_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
@@ -533,11 +591,15 @@ async def tk_select_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await query.edit_message_text(f"Starting quiz: {quiz['quiz_name']}\n{quiz['quiz_description']}")
     return await tk_send_poll(update, context)
 
+
 async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     quiz = context.user_data['quiz']
     index = context.user_data['question_index']
     if index < len(quiz['questions']):
         question = quiz['questions'][index]
+        # If this question has an image, send it first.
+        if "image" in question and question["image"]:
+            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=question["image"])
         options = question.get('options', [])
         correct_option_id = question.get('correct_option_id', 0)
         if correct_option_id is None or not isinstance(correct_option_id, int) or correct_option_id < 0 or correct_option_id >= len(options):
@@ -563,15 +625,18 @@ async def tk_send_poll(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         )
         return ConversationHandler.END
 
+
 async def tk_next_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
     context.user_data['question_index'] += 1
     return await tk_send_poll(update, context)
 
+
 async def tk_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Quiz cancelled. Use /start to return to the main menu.")
     return ConversationHandler.END
+
 
 # -------------------------------
 # Global PollAnswer Handler – Save Participant Data and Provide Feedback
@@ -620,6 +685,7 @@ async def handle_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await context.bot.send_message(chat_id=quiz_chat_id, text=feedback, reply_markup=reply_markup)
     context.user_data['current_poll_id'] = None
 
+
 # -------------------------------
 # Startup function to set bot commands
 # -------------------------------
@@ -632,10 +698,12 @@ async def on_startup(app: Application) -> None:
     ]
     await app.bot.set_my_commands(commands)
 
+
 # -------------------------------
 # MAIN: Set Up Handlers and Run the Bot
 # -------------------------------
 def main():
+    # IMPORTANT: Do not hard-code your token in production.
     TOKEN = "7699629853:AAHwJfx-IOBtndlnrTyzJ9G3YKKp-367BhU"
     app = Application.builder().token(TOKEN).build()
 
@@ -668,6 +736,10 @@ def main():
             CR_ADD_QUESTION: [
                 MessageHandler(filters.POLL, handle_created_poll),
                 CommandHandler("done", cr_finish_questions),
+            ],
+            CR_QUESTION_IMAGE: [
+                CommandHandler("skip", cr_skip_question_image),
+                MessageHandler(filters.PHOTO, cr_add_question_image),
             ],
             CR_NEXT_QUESTION: [CallbackQueryHandler(cr_next_question, pattern="^(add_another|finish_questions)$")],
             CR_TIMER: [MessageHandler(filters.TEXT & ~filters.COMMAND, cr_set_timer)],
@@ -703,6 +775,7 @@ def main():
     loop.run_until_complete(app.initialize())
     loop.run_until_complete(on_startup(app))
     app.run_polling()
+
 
 if __name__ == "__main__":
     main()
