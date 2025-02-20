@@ -511,5 +511,41 @@
     "question": "What is this image?",
     "correct_option": "C",
     "timestamp": "2025-02-18T08:39:54.695722"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6169977041920721313",
+    "selected_option": 1,
+    "question": "2+4",
+    "correct_option": "5",
+    "timestamp": "2025-02-18T10:26:50.062957"
+  },
+  {
+    "user_id": 6872081406,
+    "username": "sameer6690",
+    "poll_id": "6169977041920721314",
+    "selected_option": 1,
+    "question": "5+7",
+    "correct_option": "15",
+    "timestamp": "2025-02-18T10:26:57.308066"
+  },
+  {
+    "user_id": 998945713,
+    "username": "MasterShifu62",
+    "poll_id": "6169977041920721315",
+    "selected_option": 0,
+    "question": "What is this image?",
+    "correct_option": "A",
+    "timestamp": "2025-02-18T10:28:29.370343"
+  },
+  {
+    "user_id": 998945713,
+    "username": "MasterShifu62",
+    "poll_id": "6169977041920721316",
+    "selected_option": 1,
+    "question": "What is this image?",
+    "correct_option": "B",
+    "timestamp": "2025-02-18T10:28:48.974572"
   }
 ]
